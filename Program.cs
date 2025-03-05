@@ -1,4 +1,4 @@
-﻿using VZ_Socket;
+﻿using VZ_Sky;
 
 string SERVER_IP = "127.0.0.1";
 int SERVER_PORT = 10809;

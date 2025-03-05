@@ -1,7 +1,7 @@
 using System.Numerics;
 using OneOf;
 
-namespace VZ_Socket
+namespace VZ_Sky 
 {
     /// <summary>
     /// Class for managing type system of Vz Connection
