@@ -1,36 +1,30 @@
+using VZ_Sky;
 
-using VZ_Socket;
-public class TestProgram
+public class TestProgram : VzProgram
 {
-    private VzConnection connection;
-    public TestProgram(VzConnection connection)
+    public TestProgram(VzConnection connection) : base(connection)
     {
-        this.connection = connection;
     }
 
-    public void Run()
+    public override async Task OnStart()
     {
-        Task.Run(printMessages);
         while (true)
         {
             List<VzType> toReturn = new List<VzType> { new VzType(5), new VzType(true), new VzType("test") };
-
-            Thread.Sleep(1000);
-            connection.SendData(toReturn);
+            await Connection.SendDataAsync(toReturn);
+            await Task.Delay(1000);
         }
     }
 
-    private async void printMessages()
+    public override void ReceivedData(List<VzType> values)
     {
-        while (true)
+        Console.Write("Received: ");
+        foreach (VzType value in values)
         {
-            List<VzType> values = await connection.ReceiveDataAsync();
-            foreach (VzType value in values)
-            {
-                Console.WriteLine(value.ToString());
-            }
-
+            Console.Write(value.ToString());
+            Console.Write(", ");
         }
+        Console.WriteLine();
     }
 }
 
