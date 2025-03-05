@@ -9,11 +9,12 @@ namespace VZ_Socket
     /// </summary>
     public class VzConnection
     {
-
         private NetworkStream stream;
-        public VzConnection(TcpClient client)
+
+        public VzConnection(string ip, int port)
         {
-            stream = client.GetStream();
+            TcpClient tcpClient = new TcpClient(ip, port);
+            stream = tcpClient.GetStream();
         }
 
         /// <summary>
@@ -29,12 +30,12 @@ namespace VZ_Socket
         /// <summary>
         /// Method for receiving data 
         /// </summary>
-        public List<VzType>? ReceiveData()
+        public List<VzType> ReceiveData()
         {
             string? message = receiveMessageAsString();
             if (message == null)
             {
-                return null;
+                return new List<VzType>();
             }
             return parseMessageToList(message);
         }
