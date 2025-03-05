@@ -35,7 +35,7 @@ namespace VZ_Sky
         /// <summary>
         /// Method for sending data asynchrounously
         /// </summary>
-        public async void SendDataAsync(List<VzType> list)
+        public async Task SendDataAsync(List<VzType> list)
         {
 
             String message = parseVzTypeToString(list);
