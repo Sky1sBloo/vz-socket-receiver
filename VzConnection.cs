@@ -28,11 +28,25 @@ namespace VZ_Socket
         }
 
         /// <summary>
-        /// Method for receiving data 
+        /// Method for receiving data
+        /// Blocks the function until it receives
         /// </summary>
         public List<VzType> ReceiveData()
         {
             string? message = receiveMessageAsString();
+            if (message == null)
+            {
+                return new List<VzType>();
+            }
+            return parseMessageToList(message);
+        }
+
+        /// <summary>
+        /// Method for receiving asynchrounously 
+        /// </summary>
+        public async Task<List<VzType>> ReceiveDataAsync()
+        {
+            string? message = await receiveMessageAsStringAsync();
             if (message == null)
             {
                 return new List<VzType>();
@@ -78,11 +92,23 @@ namespace VZ_Socket
             return Encoding.UTF8.GetString(buffer, 0, bytesRead);
         }
 
+        private async Task<string?> receiveMessageAsStringAsync()
+        {
+            byte[] buffer = new byte[2048];
+            int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
+            if (bytesRead == 0)
+            {
+                return null;
+            }
+
+            return Encoding.UTF8.GetString(buffer, 0, bytesRead);
+
+        }
+
         private void sendMessageAsBytes(string message)
         {
             byte[] messageBytes = Encoding.UTF8.GetBytes(message);
             stream.Write(messageBytes);
         }
-
     }
 }
