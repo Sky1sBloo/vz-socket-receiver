@@ -77,13 +77,13 @@ namespace VZ_Sky
 
         private static string parseVzTypeToString(List<VzType> data)
         {
-            string toReturn = "";
+            var toReturn = new StringBuilder(); 
             foreach (VzType item in data)
             {
-                toReturn += item.ToString();
-                toReturn += "<<";
+                toReturn.Append(item.ToString());
+                toReturn.Append("<<");
             }
-            return toReturn.Substring(0, toReturn.Length - 2);
+            return toReturn.Length > 2 ? toReturn.ToString(0, toReturn.Length - 2) : toReturn.ToString();
         }
 
         private string? receiveMessageAsString()
