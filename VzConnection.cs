@@ -7,7 +7,7 @@ namespace VZ_Sky
     /// Class representing a connection
     /// Handles sending and receiving of data
     /// </summary>
-    public class VzConnection
+    public class VzConnection : IDisposable
     {
         private NetworkStream stream;
         private readonly TcpClient client;
@@ -18,7 +18,7 @@ namespace VZ_Sky
             stream = client.GetStream();
         }
 
-        public void Close()
+        public void Dispose()
         {
             stream?.Close();
             client?.Close();
@@ -77,7 +77,7 @@ namespace VZ_Sky
 
         private static string parseVzTypeToString(List<VzType> data)
         {
-            var toReturn = new StringBuilder(); 
+            var toReturn = new StringBuilder();
             foreach (VzType item in data)
             {
                 toReturn.Append(item.ToString());
@@ -89,32 +89,28 @@ namespace VZ_Sky
         private string? receiveMessageAsString()
         {
             byte[] buffer = new byte[2048];
-            int bytesRead = stream.Read(buffer, 0, buffer.Length);
-            if (bytesRead == 0)
+            int totalBytesRead = 0;
+            while (totalBytesRead < buffer.Length)
             {
-                return null;
+                int bytesRead = stream.Read(buffer, totalBytesRead, buffer.Length - totalBytesRead);
+                if (bytesRead == 0) break; // Connection closed
+                totalBytesRead += bytesRead;
             }
+            return Encoding.UTF8.GetString(buffer, 0, totalBytesRead);
 
-            return Encoding.UTF8.GetString(buffer, 0, bytesRead);
         }
 
         private async Task<string?> receiveMessageAsStringAsync()
         {
-            byte[] lengthBuffer = new byte[2048];
-            int lengthRead = await stream.ReadAsync(lengthBuffer, 0, lengthBuffer.Length);
-            if (lengthRead == 0)  return null;
-
-            int messageLength = BitConverter.ToInt32(lengthBuffer, 0);
-            byte[] buffer = new byte[messageLength];
-            int totalRead = 0;
-            while (totalRead < messageLength) {
-                int bytesRead = await stream.ReadAsync(buffer, totalRead, messageLength - totalRead);
-                if (bytesRead == 0)  return null;
-                totalRead += bytesRead;
+            byte[] buffer = new byte[2048];
+            int totalBytesRead = 0;
+            while (totalBytesRead < buffer.Length)
+            {
+                int bytesRead = await stream.ReadAsync(buffer, totalBytesRead, buffer.Length - totalBytesRead);
+                if (bytesRead == 0) break; // Connection closed
+                totalBytesRead += bytesRead;
             }
-
-            return Encoding.UTF8.GetString(buffer);
-
+            return Encoding.UTF8.GetString(buffer, 0, totalBytesRead);
         }
 
         private void sendMessageAsBytes(string message)
