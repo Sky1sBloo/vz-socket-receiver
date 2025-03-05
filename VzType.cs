@@ -7,17 +7,36 @@ namespace VZ_Socket
     {
         public OneOf<float, string, bool, Vector3> Value { get; set; }
 
+
+        public VzType(OneOf<float, string, bool, Vector3> value)
+        {
+            Value = value;
+        }
+        public VzType(string value)
+        {
+            Value = value;
+        }
+
         /// <summary>
         /// Infers the datatype through the string
         /// </summary>
-        ///
-        public VzType(string value)
+        public void InferTypeFromString(string str)
         {
-            string s = value.Trim();
+            string s = str.Trim();
             if (attemptToConvertToBool(s)) return;
             if (attemptToConvertToVector3(s)) return;
             if (attemptToConvertToFloat(s)) return;
             Value = s;
+
+        }
+
+        public override string ToString() {
+            return Value.Match(
+                    f => f.ToString(),
+                    s => s,
+                    b => b.ToString(),
+                    v => v.ToString()
+                    );
         }
 
         /// <summary>
@@ -61,12 +80,13 @@ namespace VZ_Socket
                     try
                     {
                         Value = new Vector3(
-                                float.Parse(parts[0].Trim()), 
-                                float.Parse(parts[1].Trim()), 
+                                float.Parse(parts[0].Trim()),
+                                float.Parse(parts[1].Trim()),
                                 float.Parse(parts[2].Trim()));
                         return true;
                     }
-                    catch { 
+                    catch
+                    {
                         return false;
                     }
                 }
@@ -81,8 +101,10 @@ namespace VZ_Socket
         ///
         /// <returns> True if convertion is successful
         ///
-        private bool attemptToConvertToFloat(string s) {
-            if (float.TryParse(s, out float floatResult)) {
+        private bool attemptToConvertToFloat(string s)
+        {
+            if (float.TryParse(s, out float floatResult))
+            {
                 Value = s;
                 return true;
             };

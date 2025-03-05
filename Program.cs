@@ -8,4 +8,11 @@ VzConnection connection = new VzConnection(tcpClient);
 
 while (true)
 {
+    List<VzType> toReturn = new List<VzType>{
+        new VzType(5),
+        new VzType(true),
+        new VzType("test") };
+
+    connection.SendData(toReturn);
+    break;
 }

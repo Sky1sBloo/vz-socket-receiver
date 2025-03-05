@@ -3,24 +3,37 @@ using System.Text;
 
 namespace VZ_Socket
 {
+    /// <summary>
+    /// Class representing a connection
+    /// Handles sending and receiving of data
+    /// </summary>
     public class VzConnection
     {
 
         private NetworkStream stream;
-
         public VzConnection(TcpClient client)
         {
             stream = client.GetStream();
         }
 
-        public void SendData(List<VzType> list) {
+        /// <summary>
+        /// Method for sending data 
+        /// </summary>
+        public void SendData(List<VzType> list)
+        {
             String message = parseVzTypeToString(list);
+            Console.WriteLine(message);
             sendMessageAsBytes(message);
         }
 
-        public List<VzType>? ReceiveData() {
+        /// <summary>
+        /// Method for receiving data 
+        /// </summary>
+        public List<VzType>? ReceiveData()
+        {
             string? message = receiveMessageAsString();
-            if (message == null) {
+            if (message == null)
+            {
                 return null;
             }
             return parseMessageToList(message);
@@ -30,8 +43,10 @@ namespace VZ_Socket
         {
             string[] items = message.Split("<<");
             List<VzType> toReturn = new List<VzType>();
-            foreach (string item in items) {
-                if (!string.IsNullOrWhiteSpace(item)) {
+            foreach (string item in items)
+            {
+                if (!string.IsNullOrWhiteSpace(item))
+                {
                     toReturn.Add(new VzType(message));
                 }
             }
@@ -39,14 +54,16 @@ namespace VZ_Socket
             return toReturn;
         }
 
-        private static string parseVzTypeToString(List<VzType> data) {
+        private static string parseVzTypeToString(List<VzType> data)
+        {
             string toReturn = "";
-            foreach (VzType item in data) {
+            foreach (VzType item in data)
+            {
                 toReturn += item.ToString();
                 toReturn += "<<";
             }
-            return toReturn;
-        }        
+            return toReturn.Substring(0, toReturn.Length - 2);
+        }
 
         private string? receiveMessageAsString()
         {
