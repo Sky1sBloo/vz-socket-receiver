@@ -3,16 +3,15 @@ using OneOf;
 
 namespace VZ_Socket
 {
+    /// <summary>
+    /// Class for managing type system of Vz Connection
+    /// </summary>
+    ///
     public class VzType
     {
         public OneOf<float, string, bool, Vector3> Value { get; set; }
 
-
         public VzType(OneOf<float, string, bool, Vector3> value)
-        {
-            Value = value;
-        }
-        public VzType(string value)
         {
             Value = value;
         }

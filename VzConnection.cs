@@ -23,7 +23,6 @@ namespace VZ_Socket
         public void SendData(List<VzType> list)
         {
             String message = parseVzTypeToString(list);
-            Console.WriteLine(message);
             sendMessageAsBytes(message);
         }
 
@@ -62,7 +61,7 @@ namespace VZ_Socket
             {
                 if (!string.IsNullOrWhiteSpace(item))
                 {
-                    toReturn.Add(new VzType(message));
+                    toReturn.Add(new VzType(item));
                 }
             }
 
