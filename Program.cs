@@ -8,6 +8,4 @@ VzConnection connection = new VzConnection(tcpClient);
 
 while (true)
 {
-    List<VzType>? value = connection.ReceiveMessage();
-    connection.SendMessage("5<<true");
 }

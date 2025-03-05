@@ -13,7 +13,12 @@ namespace VZ_Socket
             stream = client.GetStream();
         }
 
-        public List<VzType>? ReceiveMessage() {
+        public void SendData(List<VzType> list) {
+            String message = parseVzTypeToString(list);
+            sendMessageAsBytes(message);
+        }
+
+        public List<VzType>? ReceiveData() {
             string? message = receiveMessageAsString();
             if (message == null) {
                 return null;
@@ -21,7 +26,7 @@ namespace VZ_Socket
             return parseMessageToList(message);
         }
 
-        public static List<VzType> parseMessageToList(string message)
+        private static List<VzType> parseMessageToList(string message)
         {
             string[] items = message.Split("<<");
             List<VzType> toReturn = new List<VzType>();
@@ -33,6 +38,15 @@ namespace VZ_Socket
 
             return toReturn;
         }
+
+        private static string parseVzTypeToString(List<VzType> data) {
+            string toReturn = "";
+            foreach (VzType item in data) {
+                toReturn += item.ToString();
+                toReturn += "<<";
+            }
+            return toReturn;
+        }        
 
         private string? receiveMessageAsString()
         {
