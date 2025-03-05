@@ -32,6 +32,15 @@ namespace VZ_Sky
             String message = parseVzTypeToString(list);
             sendMessageAsBytes(message);
         }
+        /// <summary>
+        /// Method for sending data asynchrounously
+        /// </summary>
+        public async void SendDataAsync(List<VzType> list)
+        {
+
+            String message = parseVzTypeToString(list);
+            await sendMessageAsBytesAsync(message);
+        }
 
         /// <summary>
         /// Method for receiving data
@@ -86,6 +95,7 @@ namespace VZ_Sky
             return toReturn.Length > 2 ? toReturn.ToString(0, toReturn.Length - 2) : toReturn.ToString();
         }
 
+        /// TODO: Handle larger bytes
         private string? receiveMessageAsString()
         {
             byte[] buffer = new byte[2048];
@@ -97,6 +107,7 @@ namespace VZ_Sky
             return Encoding.UTF8.GetString(buffer, 0, bytesRead);
         }
 
+        /// TODO: Handle larger bytes
         private async Task<string?> receiveMessageAsStringAsync()
         {
             byte[] buffer = new byte[2048];
