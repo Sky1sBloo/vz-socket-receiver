@@ -89,28 +89,24 @@ namespace VZ_Sky
         private string? receiveMessageAsString()
         {
             byte[] buffer = new byte[2048];
-            int totalBytesRead = 0;
-            while (totalBytesRead < buffer.Length)
+            int bytesRead = stream.Read(buffer, 0, buffer.Length);
+            if (bytesRead == 0)
             {
-                int bytesRead = stream.Read(buffer, totalBytesRead, buffer.Length - totalBytesRead);
-                if (bytesRead == 0) break; // Connection closed
-                totalBytesRead += bytesRead;
+                return null;
             }
-            return Encoding.UTF8.GetString(buffer, 0, totalBytesRead);
-
+            return Encoding.UTF8.GetString(buffer, 0, bytesRead);
         }
 
         private async Task<string?> receiveMessageAsStringAsync()
         {
             byte[] buffer = new byte[2048];
-            int totalBytesRead = 0;
-            while (totalBytesRead < buffer.Length)
+            int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
+            if (bytesRead == 0)
             {
-                int bytesRead = await stream.ReadAsync(buffer, totalBytesRead, buffer.Length - totalBytesRead);
-                if (bytesRead == 0) break; // Connection closed
-                totalBytesRead += bytesRead;
+                return null;
             }
-            return Encoding.UTF8.GetString(buffer, 0, totalBytesRead);
+            return Encoding.UTF8.GetString(buffer, 0, bytesRead);
+
         }
 
         private void sendMessageAsBytes(string message)
