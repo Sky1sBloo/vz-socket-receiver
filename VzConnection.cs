@@ -1,7 +1,7 @@
 using System.Net.Sockets;
 using System.Text;
 
-namespace VZ_Socket
+namespace VZ_Sky
 {
     /// <summary>
     /// Class representing a connection
@@ -10,11 +10,18 @@ namespace VZ_Socket
     public class VzConnection
     {
         private NetworkStream stream;
+        private readonly TcpClient client;
 
         public VzConnection(string ip, int port)
         {
-            TcpClient tcpClient = new TcpClient(ip, port);
-            stream = tcpClient.GetStream();
+            client = new TcpClient(ip, port);
+            stream = client.GetStream();
+        }
+
+        public void Close()
+        {
+            stream?.Close();
+            client?.Close();
         }
 
         /// <summary>
@@ -93,14 +100,20 @@ namespace VZ_Socket
 
         private async Task<string?> receiveMessageAsStringAsync()
         {
-            byte[] buffer = new byte[2048];
-            int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
-            if (bytesRead == 0)
-            {
-                return null;
+            byte[] lengthBuffer = new byte[2048];
+            int lengthRead = await stream.ReadAsync(lengthBuffer, 0, lengthBuffer.Length);
+            if (lengthRead == 0)  return null;
+
+            int messageLength = BitConverter.ToInt32(lengthBuffer, 0);
+            byte[] buffer = new byte[messageLength];
+            int totalRead = 0;
+            while (totalRead < messageLength) {
+                int bytesRead = await stream.ReadAsync(buffer, totalRead, messageLength - totalRead);
+                if (bytesRead == 0)  return null;
+                totalRead += bytesRead;
             }
 
-            return Encoding.UTF8.GetString(buffer, 0, bytesRead);
+            return Encoding.UTF8.GetString(buffer);
 
         }
 
@@ -108,6 +121,13 @@ namespace VZ_Socket
         {
             byte[] messageBytes = Encoding.UTF8.GetBytes(message);
             stream.Write(messageBytes);
+        }
+
+        private async Task sendMessageAsBytesAsync(string message)
+        {
+            byte[] messageBytes = Encoding.UTF8.GetBytes(message);
+            await stream.WriteAsync(messageBytes, 0, messageBytes.Length);
+            await stream.FlushAsync();
         }
     }
 }
