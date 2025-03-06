@@ -34,7 +34,7 @@ namespace VZ_Sky
                     f => f.ToString(),
                     s => s,
                     b => b.ToString(),
-                    v => v.ToString()
+                    v => $"({v.X}, {v.Y}, {v.Z})"
                     );
         }
 
