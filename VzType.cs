@@ -1,7 +1,7 @@
 using System.Numerics;
 using OneOf;
 
-namespace VZ_Sky 
+namespace VZ_Sky
 {
     /// <summary>
     /// Class for managing type system of Vz Connection
@@ -14,6 +14,10 @@ namespace VZ_Sky
         public VzType(OneOf<float, string, bool, Vector3> value)
         {
             Value = value;
+        }
+
+        public VzType() 
+        {
         }
 
         /// <summary>
@@ -29,7 +33,8 @@ namespace VZ_Sky
 
         }
 
-        public override string ToString() {
+        public override string ToString()
+        {
             return Value.Match(
                     f => f.ToString(),
                     s => s,
@@ -74,20 +79,16 @@ namespace VZ_Sky
             {
                 string inner = s[1..^1];
                 string[] parts = inner.Split(',');
-                if (parts.Length == 3)
+                if (parts.Length == 3 &&
+                        float.TryParse(parts[0].Trim(), out float x) &&
+                        float.TryParse(parts[1].Trim(), out float y) &&
+                        float.TryParse(parts[2].Trim(), out float z))
                 {
-                    try
-                    {
-                        Value = new Vector3(
-                                float.Parse(parts[0].Trim()),
-                                float.Parse(parts[1].Trim()),
-                                float.Parse(parts[2].Trim()));
-                        return true;
-                    }
-                    catch
-                    {
-                        return false;
-                    }
+                    Value = new Vector3(
+                            float.Parse(parts[0].Trim()),
+                            float.Parse(parts[1].Trim()),
+                            float.Parse(parts[2].Trim()));
+                    return true;
                 }
             }
             return false;
