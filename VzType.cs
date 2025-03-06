@@ -38,7 +38,7 @@ namespace VZ_Sky
             return Value.Match(
                     f => f.ToString(),
                     s => s,
-                    b => b.ToString(),
+                    b => b ? "true" : "false",
                     v => $"({v.X}, {v.Y}, {v.Z})"
                     );
         }
@@ -105,7 +105,7 @@ namespace VZ_Sky
         {
             if (float.TryParse(s, out float floatResult))
             {
-                Value = s;
+                Value = floatResult;
                 return true;
             };
             return false;
