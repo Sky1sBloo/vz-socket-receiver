@@ -11,11 +11,13 @@ namespace VZ_Sky
     {
         private NetworkStream stream;
         private readonly TcpClient client;
+        private readonly int bufferSize;
 
-        public VzConnection(string ip, int port)
+        public VzConnection(string ip, int port, int bufferSize)
         {
             client = new TcpClient(ip, port);
             stream = client.GetStream();
+            this.bufferSize = bufferSize;
         }
 
         public void Dispose()
@@ -98,7 +100,7 @@ namespace VZ_Sky
         /// TODO: Handle larger bytes
         private string? receiveMessageAsString()
         {
-            byte[] buffer = new byte[2048];
+            byte[] buffer = new byte[bufferSize];
             int bytesRead = stream.Read(buffer, 0, buffer.Length);
             if (bytesRead == 0)
             {
@@ -110,7 +112,7 @@ namespace VZ_Sky
         /// TODO: Handle larger bytes
         private async Task<string?> receiveMessageAsStringAsync()
         {
-            byte[] buffer = new byte[2048];
+            byte[] buffer = new byte[bufferSize];
             int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
             if (bytesRead == 0)
             {
