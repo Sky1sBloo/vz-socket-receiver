@@ -79,7 +79,9 @@ namespace VZ_Sky
             {
                 if (!string.IsNullOrWhiteSpace(item))
                 {
-                    toReturn.Add(new VzType(item));
+                    VzType type = new VzType();
+                    type.InferTypeFromString(item);
+                    toReturn.Add(type);
                 }
             }
 
