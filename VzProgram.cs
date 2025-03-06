@@ -33,7 +33,7 @@ namespace VZ_Sky
         /// <summary>
         /// Create a asynchronous task (generally used onStart functions)
         /// </summary>
-        public static void startAsyncTask(Func<Task> callback)
+        public static void StartAsyncTask(Func<Task> callback)
         {
             Task.Run(callback);
         }
