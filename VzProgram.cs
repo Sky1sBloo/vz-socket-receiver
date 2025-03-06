@@ -39,6 +39,18 @@ namespace VZ_Sky
         }
 
         /// <summary>
+        /// Waits until the conditional function is true
+        /// </summary>
+        ///
+        /// <param name="condition">Function condition that ends waiting until this is true</param>
+        /// <param name="checkTimeMilliseconds">Time every time this condition is checked</param>
+        public async void WaitUntil(Func<bool> condition, int checkTimeMilliseconds = 10) {
+            while (!condition()) {
+                await Task.Delay(checkTimeMilliseconds);
+            }
+        }
+
+        /// <summary>
         /// Function call to call ReceivedData when it receives a message
         /// </summary>
         private async Task receiveData()
