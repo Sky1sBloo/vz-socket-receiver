@@ -9,14 +9,14 @@ namespace VZ_Sky
     ///
     public class VzType
     {
-        public OneOf<float, string, bool, Vector3> Value { get; set; }
+        public OneOf<float, string, bool, Vector3> Value { private get; set; }
 
         public VzType(OneOf<float, string, bool, Vector3> value)
         {
             Value = value;
         }
 
-        public VzType() 
+        public VzType()
         {
         }
 
@@ -32,6 +32,82 @@ namespace VZ_Sky
             Value = s;
 
         }
+
+        /// <summary>
+        /// Retrieves the value to a void returnable function
+        /// Equivalent of OneOf Switch
+        /// </summary>
+        public void GetValue(Action<float> f, Action<string> s, Action<bool> b, Action<Vector3> v)
+        {
+            Value.Switch(f, s, b, v);
+        }
+
+        /// <summary>
+        /// Retrieves the value a returnable function
+        /// Equivalent of OneOf Match 
+        /// </summary>
+        public TResult GetValue<TResult>(Func<float, TResult> f, Func<string, TResult> s, Func<bool, TResult> b, Func<Vector3, TResult> v)
+        {
+            return Value.Match(f, s, b, v);
+        }
+
+        /// <summary>
+        /// Attempts to get the float value of the type
+        /// </summary>
+        ///
+        /// <param name="value"> Returns the float value </param>
+        ///
+        /// <return>
+        /// If the operation is successful
+        /// </return
+        public bool GetFloat(out float value)
+        {
+            value = 0f;
+            return Value.TryPickT0(out value, out _);
+        }
+
+        /// <summary>
+        /// Attempts to get the stringvalue of the type
+        /// </summary>
+        ///
+        /// <param name="value"> Returns the string value </param>
+        ///
+        /// <return>
+        /// If the operation is successful
+        /// </return>
+        public bool GetString(out string value)
+        {
+            return Value.TryPickT1(out value, out _);
+        }
+
+        /// <summary>
+        /// Attempts to get the boolean of the type
+        /// </summary>
+        ///
+        /// <param name="value"> Returns the bool value </param>
+        ///
+        /// <return>
+        /// If the operation is successful
+        /// </return>
+        public bool GetBool(out bool value)
+        {
+            return Value.TryPickT2(out value, out _);
+        }
+
+        /// <summary>
+        /// Attempts to get the vector3 of the type
+        /// </summary>
+        ///
+        /// <param name="value"> Returns the vector3 value </param>
+        ///
+        /// <return>
+        /// If the operation is successful
+        /// </return>
+        public bool GetVector3(out Vector3 value)
+        {
+            return Value.TryPickT3(out value, out _);
+        }
+
 
         public override string ToString()
         {
