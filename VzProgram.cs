@@ -44,8 +44,10 @@ namespace VZ_Sky
         ///
         /// <param name="condition">Function condition that ends waiting until this is true</param>
         /// <param name="checkTimeMilliseconds">Time every time this condition is checked</param>
-        public async void WaitUntil(Func<bool> condition, int checkTimeMilliseconds = 10) {
-            while (!condition()) {
+        public async Task WaitUntil(Func<bool> condition, int checkTimeMilliseconds = 10)
+        {
+            while (!condition())
+            {
                 await Task.Delay(checkTimeMilliseconds);
             }
         }
