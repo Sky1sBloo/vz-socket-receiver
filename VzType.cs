@@ -38,7 +38,7 @@ namespace VZ_Sky
             return Value.Match(
                     f => f.ToString(),
                     s => s,
-                    b => b ? "true" : "false",
+                    b => b ? "1" : "0",  // somehow true or false doesn't work in juno
                     v => $"({v.X}, {v.Y}, {v.Z})"
                     );
         }
