@@ -13,8 +13,8 @@ namespace VZ_Sky
         public VzProgram(VzConnection connection)
         {
             this.Connection = connection;
-            startAsyncTask(receiveData);
-            startAsyncTask(OnStart);
+            StartAsyncTask(receiveData);
+            StartAsyncTask(OnStart);
         }
 
 
