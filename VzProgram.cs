@@ -33,7 +33,7 @@ namespace VZ_Sky
         /// <summary>
         /// Create a asynchronous task (generally used onStart functions)
         /// </summary>
-        public void startAsyncTask(Func<Task> callback)
+        public static void startAsyncTask(Func<Task> callback)
         {
             Task.Run(callback);
         }
@@ -44,7 +44,7 @@ namespace VZ_Sky
         ///
         /// <param name="condition">Function condition that ends waiting until this is true</param>
         /// <param name="checkTimeMilliseconds">Time every time this condition is checked</param>
-        public async Task WaitUntil(Func<bool> condition, int checkTimeMilliseconds = 10)
+        public static async Task WaitUntil(Func<bool> condition, int checkTimeMilliseconds = 10)
         {
             while (!condition())
             {
