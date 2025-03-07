@@ -20,6 +20,14 @@ namespace VZ_Sky
             this.bufferSize = bufferSize;
         }
 
+        /// <summary>
+        /// Determins if client is still connected
+        /// </summary>
+        public bool isConnected()
+        {
+            return client.Connected;
+        }
+
         public void Dispose()
         {
             stream?.Close();
@@ -106,6 +114,7 @@ namespace VZ_Sky
             int bytesRead = stream.Read(buffer, 0, buffer.Length);
             if (bytesRead == 0)
             {
+                Dispose();
                 return null;
             }
             return Encoding.UTF8.GetString(buffer, 0, bytesRead);
@@ -118,6 +127,7 @@ namespace VZ_Sky
             int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
             if (bytesRead == 0)
             {
+                Dispose();
                 return null;
             }
             return Encoding.UTF8.GetString(buffer, 0, bytesRead);
