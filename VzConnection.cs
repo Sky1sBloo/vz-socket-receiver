@@ -23,7 +23,7 @@ namespace VZ_Sky
         /// <summary>
         /// Determins if client is still connected
         /// </summary>
-        public bool isConnected()
+        public bool IsConnected()
         {
             return client.Connected;
         }
