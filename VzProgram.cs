@@ -14,16 +14,7 @@ namespace VZ_Sky
         {
             this.Connection = connection;
             StartAsyncTask(receiveData);
-            StartAsyncTask(OnStart);
         }
-
-
-        /// <summary>
-        /// Automatically called on start of program
-        /// Runs on a separate thread to allow for delay
-        /// (Ensure that it is async function)
-        /// </summary>
-        public abstract Task OnStart();
 
         /// <summary>
         /// Gets called when program receives a data

@@ -131,7 +131,6 @@ namespace VZ_Sky
                 return null;
             }
             return Encoding.UTF8.GetString(buffer, 0, bytesRead);
-
         }
 
         private void sendMessageAsBytes(string message)
