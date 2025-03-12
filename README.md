@@ -46,6 +46,7 @@ public class TestProgram : VzProgram
 {
     public TestProgram(VzConnection connection) : base(connection)
     {
+        StartAsyncTask(OnStart);
     }
 
     public override async Task OnStart()
