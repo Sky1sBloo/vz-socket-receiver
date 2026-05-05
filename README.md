@@ -15,6 +15,10 @@ The library provides 3 classes:
 
 Both the `VzProgram` and `VzConnection` is used to handle the program logic and connection
 
+## Client Usage
+Ensure that you send a `List` of values and the last index in the list contains a `|` delimeter.
+>The delimeter can be modified in the `VzConnection` class.
+
 ### VzConnection 
 Sets up connection to the server. Handles sending and receiving data both synchronously and asynchronously.
 Documentation is included in the `VzConnection.cs` file.

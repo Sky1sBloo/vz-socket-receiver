@@ -11,13 +11,16 @@ namespace VZ_Sky
     {
         private NetworkStream stream;
         private readonly TcpClient client;
+        private readonly StringBuilder receiveBuffer = new StringBuilder();
         private readonly int bufferSize;
+        private char messageDelimiter;
 
-        public VzConnection(string ip, int port, int bufferSize)
+        public VzConnection(string ip, int port, int bufferSize, char messageDelimiter = '|')
         {
             client = new TcpClient(ip, port);
             stream = client.GetStream();
             this.bufferSize = bufferSize;
+            this.messageDelimiter = messageDelimiter;
         }
 
         /// <summary>
@@ -107,30 +110,50 @@ namespace VZ_Sky
             return toReturn.Length > 2 ? toReturn.ToString(0, toReturn.Length - 2) : toReturn.ToString();
         }
 
-        /// TODO: Handle larger bytes
         private string? receiveMessageAsString()
         {
             byte[] buffer = new byte[bufferSize];
-            int bytesRead = stream.Read(buffer, 0, buffer.Length);
-            if (bytesRead == 0)
+            while (true)
             {
-                Dispose();
-                return null;
+                int bytesRead = stream.Read(buffer, 0, buffer.Length);
+                if (bytesRead == 0)
+                {
+                    Dispose();
+                    return null;
+                }
+                receiveBuffer.Append(Encoding.UTF8.GetString(buffer, 0, bytesRead));
+                string tmp = receiveBuffer.ToString();
+                int idx = tmp.IndexOf(messageDelimiter);
+                if (idx >= 0)
+                {
+                    string result = tmp.Substring(0, idx);
+                    receiveBuffer.Remove(0, idx + 1);
+                    return result;
+                }
             }
-            return Encoding.UTF8.GetString(buffer, 0, bytesRead);
         }
 
-        /// TODO: Handle larger bytes
         private async Task<string?> receiveMessageAsStringAsync()
         {
             byte[] buffer = new byte[bufferSize];
-            int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
-            if (bytesRead == 0)
+            while (true)
             {
-                Dispose();
-                return null;
+                int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
+                if (bytesRead == 0)
+                {
+                    Dispose();
+                    return null;
+                }
+                receiveBuffer.Append(Encoding.UTF8.GetString(buffer, 0, bytesRead));
+                string tmp = receiveBuffer.ToString();
+                int idx = tmp.IndexOf(messageDelimiter);
+                if (idx >= 0)
+                {
+                    string result = tmp.Substring(0, idx);
+                    receiveBuffer.Remove(0, idx + 1);
+                    return result;
+                }
             }
-            return Encoding.UTF8.GetString(buffer, 0, bytesRead);
         }
 
         private void sendMessageAsBytes(string message)
