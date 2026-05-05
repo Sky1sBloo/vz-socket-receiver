@@ -9,7 +9,7 @@ namespace VZ_Sky
     ///
     public class VzType
     {
-        public OneOf<float, string, bool, Vector3> Value { private get; set; }
+        public OneOf<float, string, bool, Vector3> Value { get; set; }
 
         public VzType(OneOf<float, string, bool, Vector3> value)
         {
