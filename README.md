@@ -75,3 +75,35 @@ public class TestProgram : VzProgram
     }
 }
 ```
+
+## Build
+
+Build the library in Release mode:
+
+```bash
+dotnet build vz_socket_receiver.csproj -c Release
+```
+
+## Packaging (NuGet)
+
+Package metadata must be added to `vz_socket_receiver.csproj` before packing (e.g. `PackageId`, `Version`, `Authors`, `Description`, `RepositoryUrl`, `PackageLicenseExpression`/`PackageLicenseFile`, `PackageReadmeFile`). See the [NuGet pack target documentation](https://learn.microsoft.com/en-us/nuget/reference/msbuild-targets#pack-target) for all available `<PropertyGroup>` fields.
+
+Create the `.nupkg`:
+
+```bash
+dotnet pack vz_socket_receiver.csproj -c Release -o ./nupkg
+```
+
+This produces `vz_socket_receiver.<version>.nupkg` (and a `.snupkg` if `IncludeSymbols` is enabled) in `./nupkg`.
+
+Publish to NuGet.org:
+
+```bash
+dotnet nuget push "./nupkg/*.nupkg" --api-key <YOUR_API_KEY> --source https://api.nuget.org/v3/index.json
+```
+
+Consumers install with:
+
+```bash
+dotnet add package <PackageId>
+```
