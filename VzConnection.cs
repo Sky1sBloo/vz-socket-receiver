@@ -15,6 +15,13 @@ namespace VZ_Sky
         private readonly int bufferSize;
         private char messageDelimiter;
 
+        /// <summary>
+        /// Creates a new connection to the server.
+        /// </summary>
+        /// <param name="ip">Server IP address.</param>
+        /// <param name="port">Server port.</param>
+        /// <param name="bufferSize">Size of the receive buffer.</param>
+        /// <param name="messageDelimiter">Character used to delimit messages (default '|').</param>
         public VzConnection(string ip, int port, int bufferSize, char messageDelimiter = '|')
         {
             client = new TcpClient(ip, port);
@@ -31,6 +38,9 @@ namespace VZ_Sky
             return client.Connected;
         }
 
+        /// <summary>
+        /// Closes the network stream and TCP client.
+        /// </summary>
         public void Dispose()
         {
             stream?.Close();

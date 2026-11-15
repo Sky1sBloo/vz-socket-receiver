@@ -7,9 +7,15 @@ namespace VZ_Sky
     /// </summary>
     public abstract class VzProgram
     {
-        // Call this if you need to send or receive data
+        /// <summary>
+        /// The connection used to send and receive data.
+        /// </summary>
         protected VzConnection Connection { get; private set; }
 
+        /// <summary>
+        /// Creates a new Vizzy program with the given connection.
+        /// </summary>
+        /// <param name="connection">The VzConnection instance to use.</param>
         public VzProgram(VzConnection connection)
         {
             this.Connection = connection;

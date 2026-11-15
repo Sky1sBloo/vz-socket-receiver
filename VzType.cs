@@ -9,13 +9,23 @@ namespace VZ_Sky
     ///
     public class VzType
     {
+        /// <summary>
+        /// The underlying typed value.
+        /// </summary>
         public OneOf<float, string, bool, Vector3> Value { get; set; }
 
+        /// <summary>
+        /// Creates a new VzType with the given value.
+        /// </summary>
+        /// <param name="value">The value to store.</param>
         public VzType(OneOf<float, string, bool, Vector3> value)
         {
             Value = value;
         }
 
+        /// <summary>
+        /// Creates a new empty VzType.
+        /// </summary>
         public VzType()
         {
         }
@@ -57,9 +67,7 @@ namespace VZ_Sky
         ///
         /// <param name="value"> Returns the float value </param>
         ///
-        /// <return>
-        /// If the operation is successful
-        /// </return
+        /// <returns>True if the operation is successful.</returns>
         public bool GetFloat(out float value)
         {
             value = 0f;
@@ -72,9 +80,7 @@ namespace VZ_Sky
         ///
         /// <param name="value"> Returns the string value </param>
         ///
-        /// <return>
-        /// If the operation is successful
-        /// </return>
+        /// <returns>True if the operation is successful.</returns>
         public bool GetString(out string value)
         {
             return Value.TryPickT1(out value, out _);
@@ -86,9 +92,7 @@ namespace VZ_Sky
         ///
         /// <param name="value"> Returns the bool value </param>
         ///
-        /// <return>
-        /// If the operation is successful
-        /// </return>
+        /// <returns>True if the operation is successful.</returns>
         public bool GetBool(out bool value)
         {
             return Value.TryPickT2(out value, out _);
@@ -100,15 +104,17 @@ namespace VZ_Sky
         ///
         /// <param name="value"> Returns the vector3 value </param>
         ///
-        /// <return>
-        /// If the operation is successful
-        /// </return>
+        /// <returns>True if the operation is successful.</returns>
         public bool GetVector3(out Vector3 value)
         {
             return Value.TryPickT3(out value, out _);
         }
 
 
+        /// <summary>
+        /// Returns the string representation of the stored value.
+        /// </summary>
+        /// <returns>The string value.</returns>
         public override string ToString()
         {
             return Value.Match(
@@ -124,8 +130,7 @@ namespace VZ_Sky
         /// and save it to value
         /// </summary>
         ///
-        /// <returns> True if convertion is successful
-        ///
+        /// <returns>True if conversion is successful.</returns>
         private bool attemptToConvertToBool(string s)
         {
             if (s.Equals("true", StringComparison.OrdinalIgnoreCase))
@@ -147,8 +152,7 @@ namespace VZ_Sky
         /// and save it to value
         /// </summary>
         ///
-        /// <returns> True if convertion is successful
-        ///
+        /// <returns>True if conversion is successful.</returns>
         private bool attemptToConvertToVector3(string s)
         {
             if (s.StartsWith("(") && s.EndsWith(")"))
@@ -175,8 +179,7 @@ namespace VZ_Sky
         /// and save it to value
         /// </summary>
         ///
-        /// <returns> True if convertion is successful
-        ///
+        /// <returns>True if conversion is successful.</returns>
         private bool attemptToConvertToFloat(string s)
         {
             if (float.TryParse(s, out float floatResult))
