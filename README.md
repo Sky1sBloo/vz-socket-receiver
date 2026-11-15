@@ -1,6 +1,8 @@
 # vz-socket-receiver 
 Library for receiving and sending data on Juno New Origins through [Sockets service for Vizzy](https://www.simplerockets.com/Mods/View/298478/Sockets-service-for-Vizzy)
 
+The nuget package is in this [link](https://www.nuget.org/packages/Sky1sBloo.VzSocketReceiver/).
+
 ## Features
  - Sending and Receiving data through Sockets Service Mod
  - Simplifies asynchronous function handling
@@ -83,6 +85,10 @@ Build the library in Release mode:
 ```bash
 dotnet build vz_socket_receiver.csproj -c Release
 ```
+## Installing
+```bash
+dotnet add package Sky1sBloo.VzSocketReceiver --version 1.0.0
+```
 
 ## Packaging (NuGet)
 
@@ -96,14 +102,3 @@ dotnet pack vz_socket_receiver.csproj -c Release -o ./nupkg
 
 This produces `vz_socket_receiver.<version>.nupkg` (and a `.snupkg` if `IncludeSymbols` is enabled) in `./nupkg`.
 
-Publish to NuGet.org:
-
-```bash
-dotnet nuget push "./nupkg/*.nupkg" --api-key <YOUR_API_KEY> --source https://api.nuget.org/v3/index.json
-```
-
-Consumers install with:
-
-```bash
-dotnet add package <PackageId>
-```
