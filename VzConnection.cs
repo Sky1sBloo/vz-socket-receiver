@@ -74,7 +74,7 @@ namespace VZ_Sky
             string? message = ReceiveMessageAsString();
             if (message == null)
             {
-                return new List<VzType>();
+                return [];
             }
             return ParseMessageToList(message);
         }
@@ -99,7 +99,7 @@ namespace VZ_Sky
             {
                 if (!string.IsNullOrWhiteSpace(item))
                 {
-                    VzType type = new VzType();
+                    VzType type = new();
                     type.InferTypeFromString(item);
                     toReturn.Add(type);
                 }
@@ -109,8 +109,8 @@ namespace VZ_Sky
         }
 
         /// <summary>
-        /// Splits a message on the "<<" list delimiter, ignoring delimiters inside
-        /// parentheses. Vizzy serializes vectors as "(x<<y<<z)", so those inner
+        /// Splits a message on the "&lt;&lt;" list delimiter, ignoring delimiters inside
+        /// parentheses. Vizzy serializes vectors as "(x&lt;&lt;y&lt;&lt;z)", so those inner
         /// delimiters must not split the vector into separate items.
         /// </summary>
         private static List<string> SplitByTopLevelDelimiter(string message)
