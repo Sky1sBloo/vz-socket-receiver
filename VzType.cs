@@ -158,16 +158,14 @@ namespace VZ_Sky
             if (s.StartsWith("(") && s.EndsWith(")"))
             {
                 string inner = s[1..^1];
-                string[] parts = inner.Split(',');
+                // Vizzy serializes vectors as "(x<<y<<z)"; this library uses "(x, y, z)".
+                string[] parts = inner.Split(new[] { "<<", "," }, StringSplitOptions.None);
                 if (parts.Length == 3 &&
                         float.TryParse(parts[0].Trim(), out float x) &&
                         float.TryParse(parts[1].Trim(), out float y) &&
                         float.TryParse(parts[2].Trim(), out float z))
                 {
-                    Value = new Vector3(
-                            float.Parse(parts[0].Trim()),
-                            float.Parse(parts[1].Trim()),
-                            float.Parse(parts[2].Trim()));
+                    Value = new Vector3(x, y, z);
                     return true;
                 }
             }

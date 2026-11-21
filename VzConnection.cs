@@ -94,9 +94,8 @@ namespace VZ_Sky
 
         private static List<VzType> parseMessageToList(string message)
         {
-            string[] items = message.Split("<<");
             List<VzType> toReturn = new List<VzType>();
-            foreach (string item in items)
+            foreach (string item in splitByTopLevelDelimiter(message))
             {
                 if (!string.IsNullOrWhiteSpace(item))
                 {
@@ -107,6 +106,44 @@ namespace VZ_Sky
             }
 
             return toReturn;
+        }
+
+        /// <summary>
+        /// Splits a message on the "<<" list delimiter, ignoring delimiters inside
+        /// parentheses. Vizzy serializes vectors as "(x<<y<<z)", so those inner
+        /// delimiters must not split the vector into separate items.
+        /// </summary>
+        private static List<string> splitByTopLevelDelimiter(string message)
+        {
+            List<string> items = new List<string>();
+            StringBuilder current = new StringBuilder();
+            int parenthesisDepth = 0;
+
+            for (int i = 0; i < message.Length; i++)
+            {
+                char c = message[i];
+
+                if (c == '(')
+                {
+                    parenthesisDepth++;
+                }
+                else if (c == ')')
+                {
+                    parenthesisDepth = Math.Max(0, parenthesisDepth - 1);
+                }
+                else if (parenthesisDepth == 0 && c == '<' && i + 1 < message.Length && message[i + 1] == '<')
+                {
+                    items.Add(current.ToString());
+                    current.Clear();
+                    i++;
+                    continue;
+                }
+
+                current.Append(c);
+            }
+
+            items.Add(current.ToString());
+            return items;
         }
 
         private static string parseVzTypeToString(List<VzType> data)
