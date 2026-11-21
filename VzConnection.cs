@@ -9,11 +9,11 @@ namespace VZ_Sky
     /// </summary>
     public class VzConnection : IDisposable
     {
-        private NetworkStream stream;
+        private readonly NetworkStream stream;
         private readonly TcpClient client;
-        private readonly StringBuilder receiveBuffer = new StringBuilder();
+        private readonly StringBuilder receiveBuffer = new();
         private readonly int bufferSize;
-        private char messageDelimiter;
+        private readonly char messageDelimiter;
 
         /// <summary>
         /// Creates a new connection to the server.
@@ -52,8 +52,8 @@ namespace VZ_Sky
         /// </summary>
         public void SendData(List<VzType> list)
         {
-            String message = parseVzTypeToString(list);
-            sendMessageAsBytes(message);
+            String message = ParseVzTypeToString(list);
+            SendMessageAsBytes(message);
         }
         /// <summary>
         /// Method for sending data asynchrounously
@@ -61,8 +61,8 @@ namespace VZ_Sky
         public async Task SendDataAsync(List<VzType> list)
         {
 
-            String message = parseVzTypeToString(list);
-            await sendMessageAsBytesAsync(message);
+            String message = ParseVzTypeToString(list);
+            await SendMessageAsBytesAsync(message);
         }
 
         /// <summary>
@@ -71,12 +71,12 @@ namespace VZ_Sky
         /// </summary>
         public List<VzType> ReceiveData()
         {
-            string? message = receiveMessageAsString();
+            string? message = ReceiveMessageAsString();
             if (message == null)
             {
                 return new List<VzType>();
             }
-            return parseMessageToList(message);
+            return ParseMessageToList(message);
         }
 
         /// <summary>
@@ -84,18 +84,18 @@ namespace VZ_Sky
         /// </summary>
         public async Task<List<VzType>> ReceiveDataAsync()
         {
-            string? message = await receiveMessageAsStringAsync();
+            string? message = await ReceiveMessageAsStringAsync();
             if (message == null)
             {
-                return new List<VzType>();
+                return [];
             }
-            return parseMessageToList(message);
+            return ParseMessageToList(message);
         }
 
-        private static List<VzType> parseMessageToList(string message)
+        private static List<VzType> ParseMessageToList(string message)
         {
-            List<VzType> toReturn = new List<VzType>();
-            foreach (string item in splitByTopLevelDelimiter(message))
+            List<VzType> toReturn = [];
+            foreach (string item in SplitByTopLevelDelimiter(message))
             {
                 if (!string.IsNullOrWhiteSpace(item))
                 {
@@ -113,10 +113,10 @@ namespace VZ_Sky
         /// parentheses. Vizzy serializes vectors as "(x<<y<<z)", so those inner
         /// delimiters must not split the vector into separate items.
         /// </summary>
-        private static List<string> splitByTopLevelDelimiter(string message)
+        private static List<string> SplitByTopLevelDelimiter(string message)
         {
-            List<string> items = new List<string>();
-            StringBuilder current = new StringBuilder();
+            List<string> items = [];
+            StringBuilder current = new();
             int parenthesisDepth = 0;
 
             for (int i = 0; i < message.Length; i++)
@@ -146,7 +146,7 @@ namespace VZ_Sky
             return items;
         }
 
-        private static string parseVzTypeToString(List<VzType> data)
+        private static string ParseVzTypeToString(List<VzType> data)
         {
             var toReturn = new StringBuilder();
             foreach (VzType item in data)
@@ -157,7 +157,7 @@ namespace VZ_Sky
             return toReturn.Length > 2 ? toReturn.ToString(0, toReturn.Length - 2) : toReturn.ToString();
         }
 
-        private string? receiveMessageAsString()
+        private string? ReceiveMessageAsString()
         {
             byte[] buffer = new byte[bufferSize];
             while (true)
@@ -173,14 +173,14 @@ namespace VZ_Sky
                 int idx = tmp.IndexOf(messageDelimiter);
                 if (idx >= 0)
                 {
-                    string result = tmp.Substring(0, idx);
+                    string result = tmp[..idx];
                     receiveBuffer.Remove(0, idx + 1);
                     return result;
                 }
             }
         }
 
-        private async Task<string?> receiveMessageAsStringAsync()
+        private async Task<string?> ReceiveMessageAsStringAsync()
         {
             byte[] buffer = new byte[bufferSize];
             while (true)
@@ -196,20 +196,20 @@ namespace VZ_Sky
                 int idx = tmp.IndexOf(messageDelimiter);
                 if (idx >= 0)
                 {
-                    string result = tmp.Substring(0, idx);
+                    string result = tmp[..idx];
                     receiveBuffer.Remove(0, idx + 1);
                     return result;
                 }
             }
         }
 
-        private void sendMessageAsBytes(string message)
+        private void SendMessageAsBytes(string message)
         {
             byte[] messageBytes = Encoding.UTF8.GetBytes(message);
             stream.Write(messageBytes);
         }
 
-        private async Task sendMessageAsBytesAsync(string message)
+        private async Task SendMessageAsBytesAsync(string message)
         {
             byte[] messageBytes = Encoding.UTF8.GetBytes(message);
             await stream.WriteAsync(messageBytes, 0, messageBytes.Length);
